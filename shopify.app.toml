@@ -1,0 +1,16 @@
+client_id = "8ee9915df5d2467d0da0daff2e77f96f"
+name = "Elyscentsads-dashboard"
+handle = "elyscentsads-dashboard"
+application_url = "https://elyscentsads.core47.ai"
+embedded = false
+
+[auth]
+redirect_urls = [
+  "https://elyscentsads.core47.ai/api/shopify/callback"
+]
+
+[access_scopes]
+scopes = "read_orders,read_customers,write_discounts"
+
+[webhooks]
+api_version = "2024-01"

@@ -1,0 +1,21 @@
+# dependencies
+/node_modules
+
+# Next.js build output
+/.next
+/out
+
+# environment files — NEVER commit these (contains API keys)
+.env
+.env.local
+.env.*.local
+
+# debug logs
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+.vercel
+.env*
