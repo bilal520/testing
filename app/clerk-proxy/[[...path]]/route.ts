@@ -1,28 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const CLERK_FRONTEND_API = 'https://frontend-api.clerk.services'
+export const runtime = 'edge'
 
 async function handler(req: NextRequest) {
-  const path = req.nextUrl.pathname.replace('/clerk-proxy', '')
-  const search = req.nextUrl.search
-  const url = `${CLERK_FRONTEND_API}${path}${search}`
+  const url = new URL(req.url)
+  const path = url.pathname.replace('/clerk-proxy', '')
+  const target = `https://frontend-api.clerk.services${path}${url.search}`
 
-  const headers = new Headers(req.headers)
-  headers.set('host', 'frontend-api.clerk.services')
+  const headers: Record<string, string> = {}
+  req.headers.forEach((value, key) => {
+    if (!['host', 'connection', 'transfer-encoding'].includes(key)) {
+      headers[key] = value
+    }
+  })
+  headers['host'] = 'frontend-api.clerk.services'
 
-  const res = await fetch(url, {
+  const res = await fetch(target, {
     method: req.method,
     headers,
-    body: req.method !== 'GET' && req.method !== 'HEAD' ? req.body : undefined,
+    body: ['GET', 'HEAD'].includes(req.method) ? undefined : req.body,
   })
 
-  const responseHeaders = new Headers(res.headers)
-  responseHeaders.set('Access-Control-Allow-Origin', req.headers.get('origin') || '*')
-  responseHeaders.set('Access-Control-Allow-Credentials', 'true')
+  const resHeaders = new Headers(res.headers)
+  const origin = req.headers.get('origin') || 'https://testing.core47.ai'
+  resHeaders.set('Access-Control-Allow-Origin', origin)
+  resHeaders.set('Access-Control-Allow-Credentials', 'true')
+  resHeaders.delete('content-encoding')
 
   return new NextResponse(res.body, {
     status: res.status,
-    headers: responseHeaders,
+    headers: resHeaders,
   })
 }
 
@@ -32,4 +39,12 @@ export const PUT = handler
 export const PATCH = handler
 export const DELETE = handler
 export const HEAD = handler
-export const OPTIONS = handler
+export const OPTIONS = () => new NextResponse(null, {
+  status: 204,
+  headers: {
+    'Access-Control-Allow-Origin': 'https://testing.core47.ai',
+    'Access-Control-Allow-Methods': 'GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS',
+    'Access-Control-Allow-Headers': '*',
+    'Access-Control-Allow-Credentials': 'true',
+  },
+})
