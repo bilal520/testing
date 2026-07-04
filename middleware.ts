@@ -1,7 +1,7 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 
-const isPublicRoute = createRouteMatcher(['/sign-in(.*)', '/api/webhooks/(.*)', '/api/hub/report/(.*)', '/api/shopify/callback(.*)', '/api/shopify/analytics-update', '/api/cron/(.*)', '/api/courier/sync', '/api/courier/enrich-tracking', '/api/oms/tick', '/api/oms/reconcile', '/api/oms/leopards-cities', '/api/oms/whatsapp/callback', '/api/cars/tick', '/api/cars/attribution', '/api/cars/daily-summary', '/api/cf/hunt'])
+const isPublicRoute = createRouteMatcher(['/sign-in(.*)', '/clerk-proxy(.*)', '/api/webhooks/(.*)', '/api/hub/report/(.*)', '/api/shopify/callback(.*)', '/api/shopify/analytics-update', '/api/cron/(.*)', '/api/courier/sync', '/api/courier/enrich-tracking', '/api/oms/tick', '/api/oms/reconcile', '/api/oms/leopards-cities', '/api/oms/whatsapp/callback', '/api/cars/tick', '/api/cars/attribution', '/api/cars/daily-summary', '/api/cf/hunt'])
 const isSignUpRoute = createRouteMatcher(['/sign-up(.*)'])
 
 export default clerkMiddleware(async (auth, request) => {
